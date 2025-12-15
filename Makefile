@@ -20,18 +20,10 @@ build-jetson:
 	-t hainingluo/unitree_dev:jetson \
 	-f Dockerfile .
 
-install-dynamixel:
-	git submodule update --init --recursive
-	docker start unitree_dev
-	sleep 1
-	docker exec -it unitree_dev bash -c "pip install -e third_party/DynamixelSDK/python"
-
 compile:
 	docker container stop unitree_dev | true && docker container rm unitree_dev | true
 	docker run \
 		-it \
-		-e ROS_IP="${ROS_IP}" \
-		-e ROS_MASTER_URI="${ROS_MASTER_URI}" \
 		-e DISPLAY \
     	-v /tmp/.X11-unix:/tmp/.X11-unix:rw \
 		-v /dev:/dev \
@@ -51,23 +43,7 @@ compile:
 run:
 	docker start unitree_dev
 	sleep 1
-	docker exec -it unitree_dev bash -c "source /opt/ros/noetic/setup.bash && roscore"
-	docker container stop unitree_dev
-
-run-local:
-	docker start unitree_dev
-	sleep 1
-	docker exec -it unitree_dev bash -c "source /opt/ros/noetic/setup.bash && \
-			export ROS_IP=127.0.0.1 && \
-			export ROS_MASTER_URI="http://127.0.0.1:11311" && roscore"
-	docker container stop unitree_dev
-
-run-local-new:
-	docker start unitree_dev
-	sleep 1
-	docker exec -it unitree_dev bash -c "source /opt/ros/noetic/setup.bash && \
-			export ROS_IP=10.101.119.100 && \
-			export ROS_MASTER_URI="http://10.101.119.100:11311" && roscore"
+	docker exec -it unitree_dev bash -c "source /opt/ros/humble/setup.bash && bash"
 	docker container stop unitree_dev
 
 debug:
@@ -75,26 +51,8 @@ debug:
 	sleep 1
 	docker exec -it unitree_dev bash -c "bash"
 
-debug-local:
-	# xhost +si:localuser:root >> /dev/null
-	docker start unitree_dev
-	sleep 1
-	docker exec -it unitree_dev bash -c "source /opt/ros/noetic/setup.bash && \
-			export ROS_IP=127.0.0.1 &&  \
-			export ROS_MASTER_URI="http://127.0.0.1:11311" && bash"
-
 stop:
 	docker container stop unitree_dev
-
-rqt-image-view:
-	xhost +si:localuser:root >> /dev/null
-	docker start unitree_dev
-	docker exec -it unitree_dev bash -c "source /opt/ros/noetic/setup.bash && export DISPLAY=:15 && rqt --perspective-file cfg/rqt/Default.perspective"	
-
-monitor-tensorboard:
-	@docker exec -it unitree_dev bash -c "ls data/$$task/results/" && \
-	docker start unitree_dev && \
-	docker exec -it unitree_dev bash -c "tensorboard --logdir=/unitree_dev/data/$$task/results/ --port=6006 --host=$$IP_ADDRESS"
 
 monitor-gpu:
 	@docker start unitree_dev
