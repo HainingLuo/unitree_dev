@@ -45,13 +45,14 @@ compile:
 run:
 	docker start unitree_dev
 	sleep 1
-	docker exec -it unitree_dev bash -c "source /opt/ros/humble/setup.bash && /bin/bash"
+	docker exec -it unitree_dev bash -c "source /unitree_ros2/setup.sh && /bin/bash"
 	docker container stop unitree_dev
 
 debug:
+	xhost +si:localuser:root >> /dev/null
 	docker start unitree_dev
 	sleep 1
-	docker exec -it unitree_dev bash -c "bash"
+	docker exec -it unitree_dev bash -c "source /unitree_ros2/setup.sh && export DISPLAY=:0 && bash"
 
 stop:
 	docker container stop unitree_dev
