@@ -11,12 +11,14 @@ IP_ADDRESS := $(shell hostname -I | cut -d' ' -f1)
 build:
 	docker build \
 	--build-arg BASE_IMAGE=nvidia/cuda:13.0.2-base-ubuntu22.04 \
+	--build-arg ARCH=amd64 \
 	-t hainingluo/unitree_dev:latest \
 	-f Dockerfile .
 
 build-jetson:
 	docker build \
 	--build-arg BASE_IMAGE=nvcr.io/nvidia/l4t-base:r36.2.0 \
+	--build-arg ARCH=arm64 \
 	-t hainingluo/unitree_dev:jetson \
 	-f Dockerfile .
 

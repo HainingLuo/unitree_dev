@@ -1,4 +1,5 @@
 ARG BASE_IMAGE
+ARG ARCH
 FROM ${BASE_IMAGE}
 ENV ROS_DISTRO=humble
 ENV ROS_ROOT=/opt/ros/${ROS_DISTRO}
@@ -100,6 +101,9 @@ RUN git clone https://github.com/unitreerobotics/unitree_ros2 && \
     cd unitree_ros2/cyclonedds_ws && \
     source /opt/ros/${ROS_DISTRO}/setup.bash && \
     colcon build
+
+ENV ARCH=${ARCH:-amd64}
+COPY ros_setup/setup_${ARCH}.sh /unitree_ros2/setup.sh
 
 ####################################################################################################
 ########################################### FINALISATION ###########################################
