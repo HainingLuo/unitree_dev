@@ -46,33 +46,10 @@ RUN export ROS_APT_SOURCE_VERSION=$(curl -s https://api.github.com/repos/ros-inf
 # Install development tools and ROS tools
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        python3-flake8-docstrings \
-        python3-pip \
-        python3-pytest-cov \
+        ros-humble-desktop \
+        ros-humble-ros-base \
         ros-dev-tools \
-        python3-flake8-blind-except \
-        python3-flake8-builtins \
-        python3-flake8-class-newline \
-        python3-flake8-comprehensions \
-        python3-flake8-deprecated \
-        python3-flake8-import-order \
-        python3-flake8-quotes \
-        python3-pytest-repeat \
-        python3-pytest-rerunfailures \
     && rm -rf /var/lib/apt/lists/*
-
-# Get ROS 2 code
-RUN mkdir -p ${ROS_ROOT}/src && \
-    vcs import --input https://raw.githubusercontent.com/ros2/ros2/${ROS_DISTRO}/ros2.repos ${ROS_ROOT}/src
-
-# Install dependencies using rosdep
-RUN apt-get update && \
-    apt-get upgrade -y
-
-RUN rosdep init && \
-    rosdep update && \
-    rosdep install --from-paths ${ROS_ROOT}/src --ignore-src -y --skip-keys "fastcdr rti-connext-dds-6.0.1 urdfdom_headers"
-
 
 ####################################################################################################
 ######################################### PIP PACKAGES #############################################
